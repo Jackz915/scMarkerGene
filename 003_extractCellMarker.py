@@ -85,7 +85,6 @@ def readAggregatedExplanation(agg_file, geneList):
                 cell_id = row[0]
                 group = row[1]
                 att_vals = [float(x) for x in row[2].split("|")]
-                # 只取与geneList长度相同的部分
                 att_vals = att_vals[:len(geneList)]
                 gene_att = dict(zip(geneList, att_vals))
                 data.append({"cell_id": cell_id, "group": group, **gene_att})
@@ -143,7 +142,6 @@ def collect_contribution_data(inDIR):
     cell_model_data = {}
     cellId2groupHash = {}
 
-    # 记录哪些 cell 至少被一个 model 接受
     valid_cell_ids = set()
 
     for model_index in range(model_count):
@@ -176,11 +174,9 @@ def collect_contribution_data(inDIR):
                     cell_model_data[cellId] = []
                 cell_model_data[cellId].append(contributions)
 
-                # group info（只记录 valid cell）
                 if cellId not in cellId2groupHash:
                     cellId2groupHash[cellId] = codeHash.get(row[0], "unknown")
 
-    # 转 gene arrays
     gene_model_arrays = []
     for gene_idx in range(n_genes):
         gene_model_arrays.append([
@@ -727,7 +723,7 @@ def extractMarkerGenes(file, marker_dict, outDIR, marker_num):
                 for g in group_genes:
                     if g not in selected_genes:
                         selected_genes.append(g)
-                        gene2fold[g] = np.nan  # fallback 没有 fold
+                        gene2fold[g] = np.nan 
                         needed -= 1
                         if needed == 0:
                             break
